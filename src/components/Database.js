@@ -53,8 +53,8 @@ class Database extends React.Component {
                <td>{item[1]}</td>
                <td>{item[2]}</td>
                <td>{item[3]}</td>
-               <td>{this.statusCheck(item[0], item[3])}</td>
-               <td key={item[0]} onClick={() => this.updateStatus(item[0], item[3])}>Change Status</td>
+               <td>{this.statusCheck(item[0], item[4])}</td>
+               <td key={item[0]} onClick={() => this.updateStatus(item[0], item[4])}>Change Status</td>
             </tr>
          )
       })
