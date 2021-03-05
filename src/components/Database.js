@@ -7,8 +7,10 @@ import axios from 'axios';
 
 import '../assets/stylesheets/style.css';
 
-const IP = 'http://172.23.112.1:5000/get-tokens';
-const IP2 = 'http://172.23.112.1:5000/update-status';
+
+const IP0 = 'http://35.205.110.132:5000';
+const IP = IP0 + '/get-tokens';
+const IP2 = IP0 + '/update-status';
 
 class Database extends React.Component {
     constructor(props) {
@@ -37,7 +39,7 @@ class Database extends React.Component {
     )}
     
     renderTableHeader() {
-        let headerElement = ['id', 'token', 'date', 'status']
+        let headerElement = ['id', 'G_Num', 'token', 'date', 'status']
         return headerElement.map((key, index) => {
             return <th key={index}>{key.toUpperCase()}</th> 
         })
@@ -50,6 +52,7 @@ class Database extends React.Component {
                <td>{item[0]}</td>
                <td>{item[1]}</td>
                <td>{item[2]}</td>
+               <td>{item[3]}</td>
                <td>{this.statusCheck(item[0], item[3])}</td>
                <td key={item[0]} onClick={() => this.updateStatus(item[0], item[3])}>Change Status</td>
             </tr>
