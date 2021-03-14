@@ -13,75 +13,148 @@ import {
   XAxis, YAxis, Tooltip, Legend, ErrorBar, LabelList, Rectangle, LineChart, Line
 } from 'recharts';
 import { scaleOrdinal } from 'd3-scale';
+import DeviceBatteryCharging20 from 'material-ui/svg-icons/device/battery-charging-20';
 //import { schemeCategory10 } from 'd3-scale-chromatic';
 
 
-const data = [
-  { name: '01/11/2020', checkins: 100, infections: 10, r0: 0.1},
-  { name: '02/11/2020', checkins: 200, infections: 50, r0: 0.2},
-  { name: '03/11/2020', checkins: 400, infections: 40, r0: 0.8},
-  { name: '04/11/2020', checkins: 300, infections: 20, r0: 1.1},
-  { name: '05/11/2020', checkins: 250, infections: 10, r0: 0.9},
-  { name: '06/11/2020', checkins: 150, infections: 30, r0: 1},
-  { name: '07/11/2020', checkins: 50, infections: 70, r0: 1.2},
-];
+const IP0 = 'http://:5000';
+const IP = IP0 + '/get-monthly-checkins';
 
 class Dashboard extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            error: null,
+            isFetching: false,
+            data: [] 
+        };
+    }
+
+    componentDidMount(){
+      var data = []
+      var checkins, infections, reproduction
+
+      fetch(IP, {method:'GET'})
+      .then(res=> res.json())
+      .then((result) => {
+
+        Object.keys(result).forEach(function(i) {
+          checkins = result[i][1]
+          infections = result[i][2]
+          reproduction = infections/checkins*infections
+
+          switch (result[i][0]){
+            case "01":
+            data[3] = { name: 'JAN', checkins: checkins, infections: infections, r0: reproduction}
+            break;
+            case "02":
+            data[4] = { name: 'FEB', checkins: checkins, infections: infections, r0: reproduction}
+            break;
+            case "03":
+            data[5] = { name: 'MAR', checkins: checkins, infections: infections, r0: reproduction}
+            break;
+            case "04":
+            data[6] = { name: 'APR', checkins: checkins, infections: infections, r0: reproduction}
+            break;
+            case "05":
+            data[7] = { name: 'MAY', checkins: checkins, infections: infections, r0: reproduction}
+            break;
+            case "10":
+            data[0] = { name: 'OCT', checkins: checkins, infections: infections, r0: reproduction}
+            break;
+            case "11":
+            data[1] = { name: 'NOV', checkins: checkins, infections: infections, r0: reproduction}
+            break;
+            case "12":
+            data[2] = { name: 'DEC', checkins: checkins, infections: infections, r0: reproduction}
+            break;
+            case "06":
+            case "07":
+            case "08":
+            case "09":
+            default:
+          }
+        })
+            this.setState({
+                isLoaded: true,
+                data: data 
+            });
+        }, (error) => {
+            this.setState({
+            isLoaded: true,
+            error
+            });
+        } 
+      )
+    }
+
+    renderMonthlyReport(){
+      return(
+        <Card >
+          <Card.Body>
+            <Card.Title>Monthly Check-ins and confirmed cases</Card.Title>
+            <Card.Text>
+              <BarChart width={500} height={300} data={this.state.data} maxBarSize={10} barSize={10}>
+                <XAxis dataKey="name" />
+                <YAxis type="number" dataKey="checkins" />
+                <CartesianGrid horizontal={false} />
+                <Tooltip />
+                <Bar dataKey="checkins" fill="#008000" />
+                <Bar dataKey="infections" fill="#FF0000" />
+              </BarChart>
+            </Card.Text>
+            <Button variant="primary">More Info</Button>
+          </Card.Body>
+        </Card>
+      )
+    }
+
+    renderReproductiveRate(){
+      return(
+        <Card >
+          <Card.Body>
+            <Card.Title>Reproductive Rate</Card.Title>
+            <Card.Text>
+                <LineChart width={500} height={300} data={this.state.data}>
+                    <XAxis dataKey="name"/>
+                    <YAxis/>
+                    <CartesianGrid stroke="#eee" strokeDasharray="5 5"/>
+                    <Line type="monotone" dataKey="r0" stroke="#8884d8" />
+                </LineChart>
+            </Card.Text>
+            <Button variant="primary">More Info</Button>
+          </Card.Body>
+        </Card>
+      )
+    }
 
     render() {
-        return (
+        const { error, isLoaded, data} = this.state;
+        if (error) {
+        return <div>Error: {error.message}</div>;
+        } else if (!isLoaded) {
+        return <div>Loading...</div>;
+        } else {
+        return(
             <div className="App">
                     <br />
                     <h3>Dashboard</h3>
                     <br />
 
                     <Container>
-
                         <Row className="show-grid">
                         <Col md={6}>
-
-                        <Card >
-                          <Card.Body>
-                            <Card.Title>Daily Check-ins and confirmed cases</Card.Title>
-                            <Card.Text>
-                              <BarChart width={500} height={300} data={data} maxBarSize={10} barSize={10}>
-                                <XAxis dataKey="name" />
-                                <YAxis type="number" dataKey="checkins" />
-                                <CartesianGrid horizontal={false} />
-                                <Tooltip />
-                                <Bar dataKey="checkins" fill="#387908" />
-                                <Bar dataKey="infections" fill="#ff0000" />
-                              </BarChart>
-                            </Card.Text>
-                            <Button variant="primary">More Info</Button>
-                          </Card.Body>
-                        </Card>
+                          {this.renderMonthlyReport()}
                         </Col>
-
                         <Col md={6}>
-                        <Card >
-                          <Card.Body>
-                            <Card.Title>Reproductive Rate</Card.Title>
-                            <Card.Text>
-                                <LineChart width={500} height={300} data={data}>
-                                    <XAxis dataKey="name"/>
-                                    <YAxis/>
-                                    <CartesianGrid stroke="#eee" strokeDasharray="5 5"/>
-                                    <Line type="monotone" dataKey="r0" stroke="#8884d8" />
-                                </LineChart>
-                            </Card.Text>
-                            <Button variant="primary">More Info</Button>
-                          </Card.Body>
-                        </Card>
+                          {this.renderReproductiveRate()}
                         </Col>
                         </Row>
-
                     </Container>
-
             </div>
         );
+        }
     }
 }
 
 export default Dashboard;
-

@@ -7,8 +7,7 @@ import axios from 'axios';
 
 import '../assets/stylesheets/style.css';
 
-
-const IP0 = 'http://35.205.110.132:5000';
+const IP0 = 'http://:5000';
 const IP = IP0 + '/get-tokens';
 const IP2 = IP0 + '/update-status';
 
@@ -45,7 +44,7 @@ class Database extends React.Component {
         })
     }
 
-     renderTableData() {
+    renderTableData() {
       return this.state.tokens.map((item) => {
          return (
             <tr key={item[0]} >
