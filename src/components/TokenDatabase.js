@@ -1,17 +1,15 @@
-
 import React from 'react';
-
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 
 import '../assets/stylesheets/style.css';
 
-const IP0 = 'http://:5000';
+const IP0 = 'http://35.195.7.207:5000';
 const IP = IP0 + '/get-tokens';
 const IP2 = IP0 + '/update-status';
 
-class Database extends React.Component {
+class TokenDatabase extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -53,7 +51,7 @@ class Database extends React.Component {
                <td>{item[2]}</td>
                <td>{item[3]}</td>
                <td>{this.statusCheck(item[0], item[4])}</td>
-               <td key={item[0]} onClick={() => this.updateStatus(item[0], item[4])}>Change Status</td>
+               <td><button key={item[0]} onClick={() => this.updateStatus(item[0], item[4])}>Change Status</button></td>
             </tr>
          )
       })
@@ -76,7 +74,6 @@ class Database extends React.Component {
           }).catch(function(error) {
               console.log(error);
           });
-
     }
 
     statusCheck = (id, status) => {
@@ -107,4 +104,4 @@ class Database extends React.Component {
 
 }
 
-export default Database;
+export default TokenDatabase;

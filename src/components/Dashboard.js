@@ -17,7 +17,7 @@ import DeviceBatteryCharging20 from 'material-ui/svg-icons/device/battery-chargi
 //import { schemeCategory10 } from 'd3-scale-chromatic';
 
 
-const IP0 = 'http://:5000';
+const IP0 = 'http://35.195.7.207:5000';
 const IP = IP0 + '/get-monthly-checkins';
 
 class Dashboard extends React.Component {

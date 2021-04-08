@@ -3,6 +3,7 @@ import Login from './components/Login.js';
 import Dashboard from './components/Dashboard.js';
 import ContactTracing from './components/ContactTracing.js';
 import Database from './components/Database.js';
+import StudentDatabase from './components/StudentDatabase.js';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbar from 'react-bootstrap/Navbar';
@@ -21,6 +22,7 @@ function App() {
               <Nav.Link href="/dashboard">Dashboard</Nav.Link>
               <Nav.Link href="/contact-tracing">Contact Tracing</Nav.Link>
               <Nav.Link href="/database">Database</Nav.Link>
+              <Nav.Link href="/student-database">StudentDatabase</Nav.Link>
             </Nav>
           </Navbar>
 
@@ -29,6 +31,7 @@ function App() {
             <Route exact path="/dashboard" component={Dashboard}/>
             <Route exact path="/contact-tracing" component={ContactTracing}/>
             <Route exact path="/database" component={Database}/>
+            <Route exact path="/student-database" component={StudentDatabase}/>
           </Switch>
 
       </div>
