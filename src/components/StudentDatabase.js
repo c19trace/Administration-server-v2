@@ -7,9 +7,11 @@ import axios from 'axios';
 
 import '../assets/stylesheets/style.css';
 
-const IP_ALLSTUDENTS = 'http:// /get-students';
+const IP_ALLSTUDENTS = 'http://35.195.7.207:5001/get-students';
 const IP_STUDENT = 'http://35.195.7.207:5000/get-student-tokens';
-const IP_UPDATE = 'http://35.195.7.207:5000/update-status';
+const IPT_UPDATE_STATUS = 'http://35.195.7.207:5000/update-status';
+const IPS_UPDATE_STATUS = 'http://35.195.7.207:5001/update-status';
+const IPT_DELETE_TOKEN = 'http://35.195.7.207:5000/delete-token';
 
 class StudentDatabase extends React.Component {
     constructor(props) {
@@ -93,6 +95,7 @@ class StudentDatabase extends React.Component {
                <td>{item[4]}</td>
                <td>{item[5]}</td>
                <td>{item[6]}</td>
+               <td><button key={item[0]} onClick={() => this.updateStudentStatus(item[0], item[6])}>Change Status</button></td>
                <td><button key={item[0]} onClick={() => this._storeStudentData(item[0])}>Info</button></td>
             </tr>
          )
@@ -130,7 +133,8 @@ class StudentDatabase extends React.Component {
                <td>{item[2]}</td>
                <td>{item[3]}</td>
                <td>{this.statusCheck(item[0], item[4])}</td>
-               <td><button key={item[0]} onClick={() => this.updateStatus(item[0], item[4])}>Change Status</button></td>
+               <td><button key={item[0]} onClick={() => this.updateTokenStatus(item[0], item[4])}>Change Status</button></td>
+               <td><button key={item[0]} onClick={() => this.deleteToken(item[0])}>Delete token</button></td>
             </tr>
          )
       })
@@ -164,9 +168,9 @@ class StudentDatabase extends React.Component {
         window.location.reload();
     }
 
-    updateStatus(id, status){
+    updateStudentStatus(id, status){
         let s = (status == 0) ? 1: 0; 
-        fetch(IP_UPDATE, {
+        fetch(IPS_UPDATE_STATUS, {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
@@ -175,6 +179,42 @@ class StudentDatabase extends React.Component {
               body: JSON.stringify({
                   id: id, 
                   status: s
+              })
+          }).then(()=>{
+            window.location.reload();
+          }).catch(function(error) {
+              console.log(error);
+          });
+    }
+
+    updateTokenStatus(id, status){
+        let s = (status == 0) ? 1: 0; 
+        fetch(IPT_UPDATE_STATUS, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                  id: id, 
+                  status: s
+              })
+          }).then(()=>{
+            window.location.reload();
+          }).catch(function(error) {
+              console.log(error);
+          });
+    }
+
+    deleteToken(id){
+        fetch(IPT_DELETE_TOKEN, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                  id: id, 
               })
           }).then(()=>{
             window.location.reload();
