@@ -1,24 +1,11 @@
 import React from 'react';
-
 import { Container, Row, Col, Card } from "react-bootstrap";
-
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
-
-import axios from 'axios';
+import {
+  BarChart, Bar, CartesianGrid, XAxis, YAxis, Tooltip, Area, AreaChart
+} from 'recharts';
 import '../styles.css';
 
-import {
-  BarChart, Bar, Brush, Cell, CartesianGrid, ReferenceLine, ReferenceArea,
-  XAxis, YAxis, Tooltip, Legend, ErrorBar, LabelList, Rectangle, LineChart, Line
-} from 'recharts';
-import { scaleOrdinal } from 'd3-scale';
-import DeviceBatteryCharging20 from 'material-ui/svg-icons/device/battery-charging-20';
-//import { schemeCategory10 } from 'd3-scale-chromatic';
-
-
-const IP0 = 'http://35.195.7.207:5000';
-const IP = IP0 + '/get-monthly-checkins';
+const IP = 'http:// :5000/get-monthly-checkins';
 
 class Dashboard extends React.Component {
     constructor(props) {
@@ -32,7 +19,7 @@ class Dashboard extends React.Component {
 
     componentDidMount(){
       var data = []
-      var checkins, infections, reproduction
+      var checkins, infections, infectionPercent
 
       fetch(IP, {method:'GET'})
       .then(res=> res.json())
@@ -41,32 +28,32 @@ class Dashboard extends React.Component {
         Object.keys(result).forEach(function(i) {
           checkins = result[i][1]
           infections = result[i][2]
-          reproduction = infections/checkins*infections
+          infectionPercent = infections / checkins * 100
 
           switch (result[i][0]){
             case "01":
-            data[3] = { name: 'JAN', checkins: checkins, infections: infections, r0: reproduction}
+            data[3] = { name: 'JAN', checkins: checkins, infections: infections, infection_percent: infectionPercent}
             break;
             case "02":
-            data[4] = { name: 'FEB', checkins: checkins, infections: infections, r0: reproduction}
+            data[4] = { name: 'FEB', checkins: checkins, infections: infections, infection_percent: infectionPercent}
             break;
             case "03":
-            data[5] = { name: 'MAR', checkins: checkins, infections: infections, r0: reproduction}
+            data[5] = { name: 'MAR', checkins: checkins, infections: infections, infection_percent: infectionPercent}
             break;
             case "04":
-            data[6] = { name: 'APR', checkins: checkins, infections: infections, r0: reproduction}
+            data[6] = { name: 'APR', checkins: checkins, infections: infections, infection_percent: infectionPercent}
             break;
             case "05":
-            data[7] = { name: 'MAY', checkins: checkins, infections: infections, r0: reproduction}
+            data[7] = { name: 'MAY', checkins: checkins, infections: infections, infection_percent: infectionPercent}
             break;
             case "10":
-            data[0] = { name: 'OCT', checkins: checkins, infections: infections, r0: reproduction}
+            data[0] = { name: 'OCT', checkins: checkins, infections: infections, infection_percent: infectionPercent}
             break;
             case "11":
-            data[1] = { name: 'NOV', checkins: checkins, infections: infections, r0: reproduction}
+            data[1] = { name: 'NOV', checkins: checkins, infections: infections, infection_percent: infectionPercent}
             break;
             case "12":
-            data[2] = { name: 'DEC', checkins: checkins, infections: infections, r0: reproduction}
+            data[2] = { name: 'DEC', checkins: checkins, infections: infections, infection_percent: infectionPercent}
             break;
             case "06":
             case "07":
@@ -75,7 +62,7 @@ class Dashboard extends React.Component {
             default:
           }
         })
-            this.setState({
+          this.setState({
                 isLoaded: true,
                 data: data 
             });
@@ -99,30 +86,36 @@ class Dashboard extends React.Component {
                 <YAxis type="number" dataKey="checkins" />
                 <CartesianGrid horizontal={false} />
                 <Tooltip />
-                <Bar dataKey="checkins" fill="#008000" />
-                <Bar dataKey="infections" fill="#FF0000" />
+                <Bar dataKey="checkins" fill="#488f31" />
+                <Bar dataKey="infections" fill="#de425b" />
               </BarChart>
             </Card.Text>
-            <Button variant="primary">More Info</Button>
           </Card.Body>
         </Card>
       )
     }
 
-    renderReproductiveRate(){
+    renderInfectionPercent(){
       return(
         <Card >
           <Card.Body>
-            <Card.Title>Reproductive Rate</Card.Title>
+            <Card.Title>Infection Percent</Card.Title>
             <Card.Text>
-                <LineChart width={500} height={300} data={this.state.data}>
-                    <XAxis dataKey="name"/>
-                    <YAxis/>
-                    <CartesianGrid stroke="#eee" strokeDasharray="5 5"/>
-                    <Line type="monotone" dataKey="r0" stroke="#8884d8" />
-                </LineChart>
+                <AreaChart width={500} height={300} data={this.state.data}
+                  margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#f5bc6b" stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor="#f5bc6b" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <Tooltip />
+                  <Area type="monotone" dataKey="infection_percent" stroke="#f5bc6b" fillOpacity={1} fill="url(#colorUv)" />
+                </AreaChart>
             </Card.Text>
-            <Button variant="primary">More Info</Button>
           </Card.Body>
         </Card>
       )
@@ -136,22 +129,21 @@ class Dashboard extends React.Component {
         return <div>Loading...</div>;
         } else {
         return(
-            <div className="App">
-                    <br />
-                    <h3>Dashboard</h3>
-                    <br />
-
-                    <Container>
-                        <Row className="show-grid">
-                        <Col md={6}>
-                          {this.renderMonthlyReport()}
-                        </Col>
-                        <Col md={6}>
-                          {this.renderReproductiveRate()}
-                        </Col>
-                        </Row>
-                    </Container>
-            </div>
+          <div className="App">
+            <br />
+            <h3>Dashboard</h3>
+            <br />
+              <Container>
+                  <Row className="show-grid">
+                  <Col md={6}>
+                    {this.renderMonthlyReport()}
+                  </Col>
+                  <Col md={6}>
+                    {this.renderInfectionPercent()}
+                  </Col>
+                  </Row>
+              </Container>
+          </div>
         );
         }
     }

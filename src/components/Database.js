@@ -1,19 +1,14 @@
-
 import React from 'react';
-
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
-import axios from 'axios';
-
 import '../assets/stylesheets/style.css';
 
-const IP_ALLSTUDENTS = 'http://35.195.7.207:5001/get-students';
-const IP_STUDENT = 'http://35.195.7.207:5000/get-student-tokens';
-const IPT_UPDATE_STATUS = 'http://35.195.7.207:5000/update-status';
-const IPS_UPDATE_STATUS = 'http://35.195.7.207:5001/update-status';
-const IPT_DELETE_TOKEN = 'http://35.195.7.207:5000/delete-token';
+const IP = 'http:// :5000'
+const ROUTE_GET_STUDENTS = IP + '/get-students';
+const ROUTE_GET_STUDENT_TOKENS = IP + '/get-student-tokens';
+const ROUTE_UPDATE_TOKEN_STATUS = IP + '/update-token-status';
+const ROUTE_UPDATE_STUDENT_STATUS = IP + '/update-student-status';
+const ROUTE_DELETE_TOKEN = IP + '/delete-token';
 
-class StudentDatabase extends React.Component {
+class Database extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -27,12 +22,10 @@ class StudentDatabase extends React.Component {
     }
 
     componentDidMount() {
-        // Search local storage
-        // if ! studentSearch
         var studentSearch = localStorage.getItem('studentSearch');
         
         if(!studentSearch){
-            fetch(IP_ALLSTUDENTS, {method:'GET'})
+            fetch(ROUTE_GET_STUDENTS, {method:'GET'})
             .then(res=> res.json())
             .then((result) => {
                 this.setState({
@@ -49,7 +42,7 @@ class StudentDatabase extends React.Component {
         } else {
             var id = localStorage.getItem('student_id');
             
-            fetch(IP_STUDENT, {
+            fetch(ROUTE_GET_STUDENT_TOKENS, {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',
@@ -59,7 +52,6 @@ class StudentDatabase extends React.Component {
                     id: id 
                 })
             })
-
             .then(res=> res.json())
             .then((result) => {
                 this.setState({
@@ -114,10 +106,6 @@ class StudentDatabase extends React.Component {
     }
 
     renderTokenTableHeader() {
-        // Should be changed. 
-        // 1: Student on top
-        // 2: Token, date, status
-        // 3. Should be a back button which removed from local storage, so next time page loads it will be students.
         let headerElement = ['token', 'date', 'status']
         return headerElement.map((key, index) => {
             return <th key={index}>{key.toUpperCase()}</th> 
@@ -125,8 +113,6 @@ class StudentDatabase extends React.Component {
     }
 
     renderTokenTableData() {
-
-    // 2: Token, date, status
       return this.state.tokens.map((item) => {
          return (
             <tr key={item[0]} >
@@ -141,12 +127,6 @@ class StudentDatabase extends React.Component {
    }
 
     _storeStudentData = (id) => {
-        // Save id to local storage
-        // save studentSearch: true to local storage
-        // reload window
-
-        // https://reactnative.dev/docs/asyncstorage
-
         var studentSearch = localStorage.getItem('studentSearch');
         if(studentSearch == true || studentSearch == false ){
 
@@ -160,9 +140,6 @@ class StudentDatabase extends React.Component {
     }
     
     _removeStudentData = () => {
-        // Remove id from local storage
-        // Remove studentSearch from local storage
-        // reload window
         localStorage.removeItem('student_id');
         localStorage.removeItem('studentSearch');
         window.location.reload();
@@ -170,7 +147,7 @@ class StudentDatabase extends React.Component {
 
     updateStudentStatus(id, status){
         let s = (status == 0) ? 1: 0; 
-        fetch(IPS_UPDATE_STATUS, {
+        fetch(ROUTE_UPDATE_STUDENT_STATUS, {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
@@ -189,7 +166,7 @@ class StudentDatabase extends React.Component {
 
     updateTokenStatus(id, status){
         let s = (status == 0) ? 1: 0; 
-        fetch(IPT_UPDATE_STATUS, {
+        fetch(ROUTE_UPDATE_TOKEN_STATUS, {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
@@ -207,7 +184,7 @@ class StudentDatabase extends React.Component {
     }
 
     deleteToken(id){
-        fetch(IPT_DELETE_TOKEN, {
+        fetch(ROUTE_DELETE_TOKEN, {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
@@ -225,7 +202,6 @@ class StudentDatabase extends React.Component {
 
     statusCheck = (id, status) => {
         return status == 0 ? "No exposure detected.": "Exposure detected.";
-
     }
 
     render(){
@@ -261,7 +237,6 @@ class StudentDatabase extends React.Component {
             );
         }
     }
-
 }
 
-export default StudentDatabase;
+export default Database;
