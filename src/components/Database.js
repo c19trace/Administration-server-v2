@@ -1,7 +1,7 @@
 import React from 'react';
-import '../assets/stylesheets/style.css';
+import { Button, Table, Container, Col, Row } from "react-bootstrap";
 
-const IP = 'http:// :5000'
+const IP = 'http://:5000'
 const ROUTE_GET_STUDENTS = IP + '/get-students';
 const ROUTE_GET_STUDENT_TOKENS = IP + '/get-student-tokens';
 const ROUTE_UPDATE_TOKEN_STATUS = IP + '/update-token-status';
@@ -87,8 +87,8 @@ class Database extends React.Component {
                <td>{item[4]}</td>
                <td>{item[5]}</td>
                <td>{item[6]}</td>
-               <td><button key={item[0]} onClick={() => this.updateStudentStatus(item[0], item[6])}>Change Status</button></td>
-               <td><button key={item[0]} onClick={() => this._storeStudentData(item[0])}>Info</button></td>
+               <td><Button size="sm" variant="outline-dark" key={item[0]} onClick={() => this.updateStudentStatus(item[0], item[6])}>Change Status</Button></td>
+               <td><Button size="sm" variant="outline-info" key={item[0]} onClick={() => this._storeStudentData(item[0])}>Info</Button></td>
             </tr>
          )
       })
@@ -96,12 +96,18 @@ class Database extends React.Component {
 
     renderTokenStudentHeader() {
         return (
-        <tr>
-            <th>{this.state.student} </th>
-            <th></th>
-            <th></th>
-            <th><button onClick={() => this._removeStudentData()}>Back</button></th>
-        </tr>
+        <Container>
+            <Row>
+                <Col>{this.state.student} </Col>
+                <Col xs={6}></Col>
+                <Col><Button size="sm" variant="outline-primary" onClick={() => this._removeStudentData()}>Back</Button></Col>
+            </Row> 
+            <Row>
+                <Col></Col>
+                <Col xs={6}></Col>
+                <Col></Col>
+            </Row> 
+        </Container>
         )
     }
 
@@ -119,8 +125,8 @@ class Database extends React.Component {
                <td>{item[2]}</td>
                <td>{item[3]}</td>
                <td>{this.statusCheck(item[0], item[4])}</td>
-               <td><button key={item[0]} onClick={() => this.updateTokenStatus(item[0], item[4])}>Change Status</button></td>
-               <td><button key={item[0]} onClick={() => this.deleteToken(item[0])}>Delete token</button></td>
+               <td><Button size="sm" variant="outline-dark" key={item[0]} onClick={() => this.updateTokenStatus(item[0], item[4])}>Change Status</Button></td>
+               <td><Button size="sm" variant="outline-danger" key={item[0]} onClick={() => this.deleteToken(item[0])}>Delete token</Button></td>
             </tr>
          )
       })
@@ -212,28 +218,28 @@ class Database extends React.Component {
         return <div>Loading...</div>;
         } else if(studentSearch){
             return (
-                <div className="App">
+                <Container className="App">
                     <br></br>
-                    <table id='tokens' getTrProps={this.onRowClick}>
+                    {this.renderTokenStudentHeader()}
+                    <Table striped bordered hover size="sm" id='tokens' getTrProps={this.onRowClick}>
                     <tbody>
-                        {this.renderTokenStudentHeader()}
                         <tr>{this.renderTokenTableHeader()}</tr>
                         {this.renderTokenTableData()}
                     </tbody>
-                    </table>                
-                </div>
+                    </Table>                
+                </Container>
             );
         } else {
             return (
-            <div className="App">
+            <Container className="App">
                 <br></br>
-                <table id='students' getTrProps={this.onRowClick}>
+                <Table striped bordered hover size="sm" id='students' getTrProps={this.onRowClick}>
                 <tbody>
                     <tr>{this.renderStudentTableHeader()}</tr>
                     {this.renderStudentTableData()}
                 </tbody>
-                </table>                
-            </div>
+                </Table>                
+            </Container>
             );
         }
     }

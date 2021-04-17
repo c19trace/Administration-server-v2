@@ -16,7 +16,6 @@ function App() {
           <Navbar bg="dark" variant="dark">
           <Navbar.Brand href="#home">c19trace</Navbar.Brand>
             <Nav className="mr-auto">
-              <Nav.Link href="/">Login</Nav.Link>
               <Nav.Link href="/dashboard">Dashboard</Nav.Link>
               <Nav.Link href="/database">Database</Nav.Link>
             </Nav>

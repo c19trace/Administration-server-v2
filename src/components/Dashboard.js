@@ -5,7 +5,7 @@ import {
 } from 'recharts';
 import '../styles.css';
 
-const IP = 'http:// :5000/get-monthly-checkins';
+const IP = 'http://:5000/get-monthly-checkins';
 
 class Dashboard extends React.Component {
     constructor(props) {
